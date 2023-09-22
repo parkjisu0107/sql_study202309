@@ -84,19 +84,19 @@ EMPLOYEES Å×ÀÌºí¿¡¼­ ÀÌ¸§, ÀÔ»çÀÏÀÚ ÄÃ·³À¸·Î º¯°æÇØ¼­ ÀÌ¸§¼øÀ¸·Î ¿À¸§Â÷¼ø Ãâ·Â Ç
 Á¶°Ç 2) ÀÔ»çÀÏÀÚ ÄÃ·³Àº xx/xx/xx·Î ÀúÀåµÇ¾î ÀÖ½À´Ï´Ù. xxxxxxÇüÅÂ·Î º¯°æÇØ¼­ Ãâ·ÂÇÕ´Ï´Ù.
 */
 SELECT 
-    CONCAT(first_name, last_name),
-    TRIM(REPLACE(hire_date, '/', ' '))
-FROM employees;
+    CONCAT(first_name, last_name) AS ÀÌ¸§,
+    REPLACE(hire_date, '/', '') AS ÀÔ»çÀÏ
+FROM employees
+ORDER BY ÀÌ¸§;
 
 /*
 ¹®Á¦ 2.
 EMPLOYEES Å×ÀÌºí¿¡¼­ phone_numberÄÃ·³Àº ###.###.####ÇüÅÂ·Î ÀúÀåµÇ¾î ÀÖ´Ù
 ¿©±â¼­ Ã³À½ ¼¼ ÀÚ¸® ¼ýÀÚ ´ë½Å ¼­¿ï Áö¿ªº¯È£ (02)¸¦ ºÙ¿© 
-ÀüÈ­ ¹øÈ£¸¦ Ãâ·ÂÇÏµµ·Ï Äõ¸®¸¦ ÀÛ¼ºÇÏ¼¼¿ä. (CONCAT, SUBSTR, LENGTH »ç¿ë)
+ÀüÈ­ ¹øÈ£¸¦ Ãâ·ÂÇÏµµ·Ï Äõ¸®¸¦ ÀÛ¼ºÇÏ¼¼¿ä. (CONCAT, SUBSTR »ç¿ë)
 */
-SELECT phone_number FROM employees;
-
-SELECT CONCAT('02', SUBSTR((phone_number), 4, LENGTH(phone_number)-4))
+SELECT
+    CONCAT('(02)', SUBSTR((phone_number), 5))
 FROM employees;
 
 
@@ -112,9 +112,8 @@ EMPLOYEES Å×ÀÌºí¿¡¼­ JOB_ID°¡ it_progÀÎ »ç¿øÀÇ ÀÌ¸§(first_name)°ú ±Þ¿©(salary)¸¦
 
 SELECT 
     RPAD(SUBSTR(first_name, 1, 3), LENGTH(first_name), '*') AS name,
-    LPAD(salary, 10, '*') AS salary
+    LPAD(salary, 10, '#') AS salary
 FROM employees
-2
 WHERE LOWER(job_id) = 'it_prog';
 
 
