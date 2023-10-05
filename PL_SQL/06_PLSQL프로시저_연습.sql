@@ -94,4 +94,67 @@ employee_id, last_name, email, hire_date, job_id를 입력받아
 머지를 할 타겟 테이블 -> emps
 병합시킬 데이터 -> 프로시저로 전달받은 employee_id를 dual에 select 때려서 비교.
 프로시저가 전달받아야 할 값: 사번, last_name, email, hire_date, job_id
+
+마지막 문제 병합시킬 데이터 비교 -> employees가 아닙니다! 
+IF문을 사용하지 않게 하기 위해 dual에다가 단순 번호만 만들어서 ON 절에서 비교하는 거라 생각하시면 됩니다.
 */
+
+
+CREATE TABLE emps AS SELECT * FROM employees;
+
+CREATE OR REPLACE PROCEDURE new_emp_proc (
+    p_employee_id IN emps.employee_id%TYPE,
+    p_last_name IN emps.last_name%TYPE,
+    p_email IN emps.email%TYPE,
+    p_hire_date IN emps.hire_date%TYPE,
+    p_job_id IN emps.job_id%TYPE
+)
+IS
+BEGIN
+    MERGE INTO emps a -- 머지를 할 타겟 테이블
+    USING
+        (SELECT p_employee_id AS employee_id FROM dual) b    
+    ON
+        (a.employee_id = b.employee_id) -- 전달받은 사번이 emps에 존재하는 지를 병합 조건으로 물어봄.
+        
+    WHEN MATCHED THEN
+        UPDATE SET
+            a.last_name = p_last_name,
+            a.email = p_email,
+            a.hire_date = p_hire_date,
+            a.job_id = p_job_id
+    WHEN NOT MATCHED THEN
+        INSERT (a.employee_id, a.last_name, a.email, a.hire_date, a.job_id)
+        VALUES (p_employee_id, p_last_name, p_email, p_hire_date, p_job_id);
+    
+END;
+
+EXEC new_emp_proc(100, 'kim', 'kim1234', '2023-04-24', 'test2');
+
+SELECT * FROM emps;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
